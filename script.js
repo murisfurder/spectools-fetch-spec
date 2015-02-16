@@ -5,20 +5,22 @@ var fs = require('fs');
 // https://example.com filename.html filename_{width}x{height}.png 1280 1024
 // [0]: script path
 // [1]: URL to visit
-// [2]: filename for html dump.
-// [3]: filename for screenshot
-// [4]: screenshot width
-// [5]: screenshot height
+// [2]: dir
+// [4]: filename for html dump.
+// [4]: filename for screenshot
+// [5]: screenshot width
+// [6]: screenshot height
 
 if (system.args.length <= 2) {
     system.stderr.write('Not enough args.');
     phantom.exit(1);
 }
 var url = system.args[1];
-var filename = system.args[2];
-var screenshot_filename = system.args[3] || null;
-var width = parseInt(system.args[4] || 0, 10);
-var height = parseInt(system.args[5] || 0, 10);
+var dir = system.args[2];
+var filename = system.args[3];
+var screenshot_filename = system.args[4] || null;
+var width = parseInt(system.args[5] || 0, 10);
+var height = parseInt(system.args[6] || 0, 10);
 
 function screenshot(screenshot_filename, w, h) {
     var zoom = 1;
@@ -28,7 +30,7 @@ function screenshot(screenshot_filename, w, h) {
     page.clipRect = { top: 0, left: 0, width: w, height: h };
     page.zoomFactor = zoom;
     screenshot_filename = screenshot_filename.replace(/{\s*width\s*}/, w).replace(/{\s*height\s*}/, h);
-    screenshot_filename = system.env.TMPDIR + (screenshot_filename || "").replace(/\.png$/, "") + ".png";
+    screenshot_filename = dir + (screenshot_filename || "").replace(/\.png$/, "") + ".png";
     page.render(screenshot_filename, { format: 'png' });
     return screenshot_filename;
 }
@@ -56,7 +58,7 @@ page.onCallback = function(err, data) {
     }
     var results = {
         resources: resources,
-        filepath: system.env.TMPDIR + filename,
+        filepath: dir + filename,
         screenshot: null,
         clientsideRendering: data.clientsideRendering
     };

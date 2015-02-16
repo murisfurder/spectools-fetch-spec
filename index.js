@@ -1,6 +1,7 @@
 "use strict";
 var fs = require("fs");
 var path = require("path");
+var os = require("os");
 var childProcess = require("child_process");
 var phantomjs = require("phantomjs");
 var binPath = phantomjs.path;
@@ -20,8 +21,8 @@ try {
     throw e;
 }
 
-function exec( url, filename, screenshot_filename, width, height, options, callback) {
-    var args = ["--ssl-protocol=TLSv1", "--ignore-ssl-errors=yes", phtm_script, url, filename];
+function exec(url, dir, filename, screenshot_filename, width, height, options, callback) {
+    var args = ["--ssl-protocol=TLSv1", "--ignore-ssl-errors=yes", phtm_script, url, dir, filename];
     if (screenshot_filename) {
         args.push.call(args, screenshot_filename, width, height);
     }
@@ -55,8 +56,9 @@ function fetch(url, options, callback) {
         options = {};
     }
     
-    var filename = options.filename || uuid() + ".html";
-    var screenshot = options.screenshot,
+    var filename = options.filename || uuid() + ".html",
+        dir = options.dir || os.tmpDir(),
+        screenshot = options.screenshot,
         screenshot_filename = null,
         width = null,
         height = null;
@@ -75,14 +77,14 @@ function fetch(url, options, callback) {
     }
 
     if (options.attempts && options.attempts > 1) {
-        var call = backoff.call(exec, url, filename, screenshot_filename, width, height, execOptions, callback);
+        var call = backoff.call(exec, url, dir, filename, screenshot_filename, width, height, execOptions, callback);
         call.setStrategy(new backoff.ExponentialStrategy({
             initialDelay: options.delay || 1
         }));
         call.failAfter(options.attempts - 1);
         call.start();
     } else {
-        exec(url, filename, screenshot_filename, width, height, execOptions, callback);
+        exec(url, dir, filename, screenshot_filename, width, height, execOptions, callback);
     }
 }
 
