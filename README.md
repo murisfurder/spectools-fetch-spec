@@ -1,4 +1,4 @@
-fetch-spec
+fetch-spec [![Build Status](https://travis-ci.org/spectools/spectools-fetch-spec.svg)](https://travis-ci.org/spectools/spectools-fetch-spec)
 ==========
 
 `spectools-fetch-spec` is a PhantomJS-based node module
