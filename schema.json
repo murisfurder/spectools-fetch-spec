@@ -1,0 +1,99 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Spec Data",
+    "description": "A list of spec references.",
+    "definitions": {
+        "screenshot": {
+            "type": ["object", "null"],
+            "properties": {
+                "width": { "$ref": "#/definitions/dimension" },
+                "height": { "$ref": "#/definitions/dimension" },
+                "filepath": { "$ref": "#/definitions/filepath" }
+            },
+            "required": ["width", "height", "filepath"],
+            "additionalProperties": false
+        },
+        "dimension": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true 
+        },
+        "filepath": {
+            "definition": "File path",
+            "type": "string",
+            "minLength":1
+        },
+        "resource": {
+            "type": "object",
+            "properties": {
+                "headers": {
+                    "$ref": "#/definitions/headers"
+                },
+                "id": {
+                    "title": "ID",
+                    "type": "number",
+                    "minimum": 0
+                },
+                "method": {
+                    "title": "HTTP Method",
+                    "type": "string",
+                    "enum": ["GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "OPTIONS", "CONNECT", "PATCH"]
+                },
+                "time": {
+                    "title": "Timestamp",
+                    "example": "2015-02-14T10:14:09.466Z",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "url": {
+                    "title": "URL",
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": ["headers", "id", "method", "time", "url"],
+            "additionalProperties": false
+        },
+        "resources": {
+            "type": "array",
+            "items": [
+                { "$ref": "#/definitions/resource" }
+            ],
+            "minItems": 1
+        },
+        "header": {
+            "title": "HTTP Header",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": ["name", "value"],
+            "additionalProperties": false
+        },
+        "headers": {
+            "title": "HTTP Headers",
+            "type": "array",
+            "items": [
+                { "$ref": "#/definitions/header" }
+            ]
+        }
+    },
+    "properties": {
+        "filepath": { "$ref": "#/definitions/filepath" },
+        "resources": { "$ref": "#/definitions/resources" },
+        "screenshot": { "$ref": "#/definitions/screenshot" },
+        "clientsideRendering": {
+            "description": "Indicates whether the spec is a ReSpec draft.",
+            "type": "boolean"
+        }
+    },
+    "type": "object",
+    "required": ["clientsideRendering", "filepath", "screenshot", "resources"],
+    "additionalProperties": false
+}
+
