@@ -31,11 +31,20 @@ function exec( url, filename, screenshot_filename, width, height, options, callb
     childProcess.execFile(binPath, args, { timeout: options.timeout }, function(err, stdout, stderr) {
         if (err) return callback(err, null, stderr);
         try {
-            callback(null, JSON.parse(stdout), stderr);
+            callback(null, parseJSON(stdout), stderr);
         } catch(e) {
             callback(e, null, stderr);
         }
     });
+}
+
+function parseJSON(stdout) {
+    var START = "SPECTOOLS_FETCH_SPEC_START";
+    var END = "SPECTOOLS_FETCH_SPEC_END";
+    var start = stdout.indexOf(START) + START.length;
+    var end = stdout.indexOf(END);
+    var substr = stdout.substring(start, end);
+    return JSON.parse(substr);
 }
 
 function fetch(url, options, callback) {

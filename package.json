@@ -11,7 +11,7 @@
   "dependencies": {
     "backoff": "2.4.0",
     "esprima": "1.2.2",
-    "phantomjs": "1.9.10",
+    "phantomjs": "1.9.15",
     "uuid": "2.0.1"
   },
   "devDependencies": {

@@ -70,7 +70,7 @@ page.onCallback = function(err, data) {
             filepath: screenshot(screenshot_filename, width, height)
         };
     }
-    system.stdout.write(JSON.stringify(results));
+    system.stdout.write("SPECTOOLS_FETCH_SPEC_START" + JSON.stringify(results) + "SPECTOOLS_FETCH_SPEC_END");
     page.close();
     phantom.exit(0);
 };
