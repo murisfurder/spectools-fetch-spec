@@ -1,6 +1,7 @@
 var assert = require("assert"),
     fetch = require("../index"),
     path = require("path"),
+    os = require("os"),
     tv4 = require("tv4"),
     pointer = require("json-pointer"),
     formats = require('tv4-formats');
@@ -40,8 +41,8 @@ suite("Test spec fetch module", function() {
             fetch("http:127.0.0.1:3000/anolis", { filename: "anolis.html", screenshot: true }, function(err, results) {
                 assert(!err, err);
                 assertValid(results);
-                assert.equal(results.filepath, path.join(process.env.TMPDIR, "anolis.html"));
-                assert.equal(results.screenshot.filepath, path.join(process.env.TMPDIR, "anolis.png"));
+                assert.equal(results.filepath, path.join(os.tmpDir(), "anolis.html"));
+                assert.equal(results.screenshot.filepath, path.join(os.tmpDir(), "anolis.png"));
                 assert.equal(results.screenshot.width, 1280);
                 assert.equal(results.screenshot.height, 1024);
                 done()
@@ -52,8 +53,8 @@ suite("Test spec fetch module", function() {
             fetch("http:127.0.0.1:3000/anolis", { filename: "anolis.html", screenshot: { filename: "foo_{width}x{height}.png", width: 320, height: 256 }}, function(err, results) {
                 assert(!err, err);
                 assertValid(results);
-                assert.equal(results.filepath, path.join(process.env.TMPDIR, "anolis.html"));
-                assert.equal(results.screenshot.filepath, path.join(process.env.TMPDIR, "foo_320x256.png"));
+                assert.equal(results.filepath, path.join(os.tmpDir(), "anolis.html"));
+                assert.equal(results.screenshot.filepath, path.join(os.tmpDir(), "foo_320x256.png"));
                 assert.equal(results.screenshot.width, 320);
                 assert.equal(results.screenshot.height, 256);
                 done()
@@ -73,7 +74,7 @@ suite("Test spec fetch module", function() {
             fetch("http:127.0.0.1:3000/anolis", { screenshot: true }, function(err, results) {
                 assert(!err, err);
                 assertValid(results);
-                var regexp = new RegExp("^" + path.join(process.env.TMPDIR, "[0-f]{8}-[0-f]{4}-[0-f]{4}-[0-f]{4}-[0-f]{12}\.png$"));
+                var regexp = new RegExp("^" + path.join(os.tmpDir(), "[0-f]{8}-[0-f]{4}-[0-f]{4}-[0-f]{4}-[0-f]{12}\.png$"));
                 assert(results.screenshot.filepath.match(regexp));
                 done();
             });
@@ -85,7 +86,7 @@ suite("Test spec fetch module", function() {
             fetch("http:127.0.0.1:3000/anolis", function(err, results) {
                 assert(!err, err);
                 assertValid(results);
-                var regexp = new RegExp("^" + path.join(process.env.TMPDIR, "[0-f]{8}-[0-f]{4}-[0-f]{4}-[0-f]{4}-[0-f]{12}\.html$"));
+                var regexp = new RegExp("^" + path.join(os.tmpDir(), "[0-f]{8}-[0-f]{4}-[0-f]{4}-[0-f]{4}-[0-f]{12}\.html$"));
                 assert(results.filepath.match(regexp));
                 done();
             });
@@ -95,7 +96,7 @@ suite("Test spec fetch module", function() {
             fetch("http:127.0.0.1:3000/anolis", { filename: "foo.html" }, function(err, results) {
                 assert(!err, err);
                 assertValid(results);
-                assert.equal(results.filepath, path.join(process.env.TMPDIR, "foo.html"));
+                assert.equal(results.filepath, path.join(os.tmpDir(), "foo.html"));
                 done();
             });
         });
