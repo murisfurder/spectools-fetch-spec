@@ -21,10 +21,10 @@ try {
     throw e;
 }
 
-function exec(url, dir, filename, screenshot_filename, width, height, options, callback) {
-    var args = ["--ssl-protocol=TLSv1", "--ignore-ssl-errors=yes", phtm_script, url, dir, filename];
-    if (screenshot_filename) {
-        args.push.call(args, screenshot_filename, width, height);
+function exec(url, filepath, screenshot_filepath, width, height, options, callback) {
+    var args = ["--ssl-protocol=TLSv1", "--ignore-ssl-errors=yes", phtm_script, url, filepath];
+    if (screenshot_filepath) {
+        args.push.call(args, screenshot_filepath, width, height);
     }
     if (options.config) {
         args.unshift("--config=" + options.config);
@@ -56,18 +56,24 @@ function fetch(url, options, callback) {
         options = {};
     }
     
-    var filename = options.filename || uuid() + ".html",
-        dir = options.dir || os.tmpDir(),
+    var dir = options.dir || os.tmpDir(),
+        filename = options.filename || uuid() + ".html",
+        filepath = path.join(dir, filename),
         screenshot = options.screenshot,
         screenshot_filename = null,
+        screenshot_filepath = null,
         width = null,
         height = null;
+    
     
     if (screenshot) {
         if (typeof screenshot != "object") { screenshot = {}; } // options.screenshot is true
         screenshot_filename = screenshot.filename || filename.replace(/\.html$/, ".png");
         var width = screenshot.width || 1280;
         var height = screenshot.height || 1024;
+        screenshot_filename = screenshot_filename.replace(/{\s*width\s*}/, width).replace(/{\s*height\s*}/, height);
+        screenshot_filename = screenshot_filename.replace(/\.png$/, "") + ".png";
+        screenshot_filepath = path.join(dir, screenshot_filename);
     }
     
     
@@ -77,14 +83,14 @@ function fetch(url, options, callback) {
     }
 
     if (options.attempts && options.attempts > 1) {
-        var call = backoff.call(exec, url, dir, filename, screenshot_filename, width, height, execOptions, callback);
+        var call = backoff.call(exec, url, filepath, screenshot_filepath, width, height, execOptions, callback);
         call.setStrategy(new backoff.ExponentialStrategy({
             initialDelay: options.delay || 1
         }));
         call.failAfter(options.attempts - 1);
         call.start();
     } else {
-        exec(url, dir, filename, screenshot_filename, width, height, execOptions, callback);
+        exec(url, filepath, screenshot_filepath, width, height, execOptions, callback);
     }
 }
 

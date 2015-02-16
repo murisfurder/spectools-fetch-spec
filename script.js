@@ -2,12 +2,11 @@ var system = require('system');
 var fs = require('fs');
 
 // Args:
-// https://example.com filename.html filename_{width}x{height}.png 1280 1024
+// https://example.com /tmp/filename.html /tmp/filename_{width}x{height}.png 1280 1024
 // [0]: script path
 // [1]: URL to visit
-// [2]: dir
-// [4]: filename for html dump.
-// [4]: filename for screenshot
+// [4]: filepath for html dump.
+// [4]: filepath for screenshot
 // [5]: screenshot width
 // [6]: screenshot height
 
@@ -16,23 +15,20 @@ if (system.args.length <= 2) {
     phantom.exit(1);
 }
 var url = system.args[1];
-var dir = system.args[2];
-var filename = system.args[3];
-var screenshot_filename = system.args[4] || null;
-var width = parseInt(system.args[5] || 0, 10);
-var height = parseInt(system.args[6] || 0, 10);
+var filepath = system.args[2];
+var screenshot_filepath = system.args[3] || null;
+var width = parseInt(system.args[4] || 0, 10);
+var height = parseInt(system.args[5] || 0, 10);
 
-function screenshot(screenshot_filename, w, h) {
+function screenshot(screenshot_filepath, w, h) {
     var zoom = 1;
     w = w * zoom;
     h = h * zoom;
     page.viewportSize = { width: w, height: h };
     page.clipRect = { top: 0, left: 0, width: w, height: h };
     page.zoomFactor = zoom;
-    screenshot_filename = screenshot_filename.replace(/{\s*width\s*}/, w).replace(/{\s*height\s*}/, h);
-    screenshot_filename = dir + (screenshot_filename || "").replace(/\.png$/, "") + ".png";
-    page.render(screenshot_filename, { format: 'png' });
-    return screenshot_filename;
+    page.render(screenshot_filepath, { format: 'png' });
+    return screenshot_filepath;
 }
 
 var page = require('webpage').create();
@@ -58,18 +54,18 @@ page.onCallback = function(err, data) {
     }
     var results = {
         resources: resources,
-        filepath: dir + filename,
+        filepath: filepath,
         screenshot: null,
         clientsideRendering: data.clientsideRendering
     };
     fs.write(results.filepath, page.content, 'w');
     
-    if (screenshot_filename) {
+    if (screenshot_filepath) {
         page.evaluate(function() { document.body.bgColor = 'white'; });
         results.screenshot = {
             width: width,
             height: height,
-            filepath: screenshot(screenshot_filename, width, height)
+            filepath: screenshot(screenshot_filepath, width, height)
         };
     }
     system.stdout.write("SPECTOOLS_FETCH_SPEC_START" + JSON.stringify(results) + "SPECTOOLS_FETCH_SPEC_END");
