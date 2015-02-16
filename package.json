@@ -1,6 +1,6 @@
 {
   "name": "spectools-fetch-spec",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Gathers the HTML content of a spec, a list of subresources it fetches and, optionally, a screenshot of the spec.",
   "main": "index.js",
   "scripts": {
