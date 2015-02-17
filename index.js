@@ -65,7 +65,6 @@ function fetch(url, options, callback) {
         width = null,
         height = null;
     
-    
     if (screenshot) {
         if (typeof screenshot != "object") { screenshot = {}; } // options.screenshot is true
         screenshot_filename = screenshot.filename || filename.replace(/\.html$/, ".png");
@@ -75,7 +74,6 @@ function fetch(url, options, callback) {
         screenshot_filename = screenshot_filename.replace(/\.png$/, "") + ".png";
         screenshot_filepath = path.join(dir, screenshot_filename);
     }
-    
     
     var execOptions = {
         timeout: options.timeout || 0,

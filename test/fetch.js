@@ -37,7 +37,7 @@ suite("Test spec fetch module", function() {
     var server = require("spectools-fixtures").serve();
     
     suite("Screenshots", function() {
-        test("default values for screenshot", function(done) {
+        test ("default values for screenshot", function(done) {
             fetch("http:127.0.0.1:3000/anolis", { filename: "anolis.html", screenshot: true }, function(err, results) {
                 assert(!err, err);
                 assertValid(results);
@@ -45,7 +45,7 @@ suite("Test spec fetch module", function() {
                 assert.equal(results.screenshot.filepath, path.join(os.tmpDir(), "anolis.png"));
                 assert.equal(results.screenshot.width, 1280);
                 assert.equal(results.screenshot.height, 1024);
-                done()
+                done();
             });
         });
     
@@ -57,7 +57,7 @@ suite("Test spec fetch module", function() {
                 assert.equal(results.screenshot.filepath, path.join(os.tmpDir(), "foo_320x256.png"));
                 assert.equal(results.screenshot.width, 320);
                 assert.equal(results.screenshot.height, 256);
-                done()
+                done();
             });
         });
         
